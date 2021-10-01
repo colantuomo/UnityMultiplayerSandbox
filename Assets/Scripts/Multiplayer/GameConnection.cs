@@ -20,7 +20,10 @@ public class GameConnection : MonoBehaviourPunCallbacks
         _photonView = GetComponent<PhotonView>();
         playerNameInput.enabled = false;
         joinBtn.enabled = false;
-        PhotonNetwork.ConnectUsingSettings();
+        if (!PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
     public override void OnConnectedToMaster()
     {
@@ -32,9 +35,9 @@ public class GameConnection : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        Debug.Log("A player entered the lobby");
         playerNameInput.enabled = true;
         joinBtn.enabled = true;
+        UpdateRoomPlayers();
     }
 
     public override void OnJoinedRoom()
@@ -50,6 +53,16 @@ public class GameConnection : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
+        UpdateRoomPlayers();
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        UpdateRoomPlayers();
+    }
+
+    private void UpdateRoomPlayers()
+    {
         playersCount.text = PhotonNetwork.CountOfPlayers + "";
     }
 
@@ -58,6 +71,8 @@ public class GameConnection : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.NickName = playerNameInput.text;
         RoomOptions options = new RoomOptions();
         PhotonNetwork.JoinOrCreateRoom(roomForTesting, options, TypedLobby.Default);
+        playerNameInput.enabled = true;
+        joinBtn.enabled = true;
         playerNameInput.text = "";
     }
 

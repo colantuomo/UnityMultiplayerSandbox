@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 
 public class RayDirection
@@ -15,13 +16,15 @@ public class RayDirection
 }
 public class SeekerEnemy : MonoBehaviour
 {
+    public float damage = 1f;
     public float searchArea = 1f;
     public float rayDistance = 2f;
     public LayerMask wallLayer;
-    public float timeRemaining = 2f;
+    public float countdownSeconds = 2f;
     private float localRayDistance;
     private NavigationAgent _agent;
-    List<RayDirection> rays = new List<RayDirection>();
+    private float _timeRemaining;
+    private bool canDamage;
     void Start()
     {
         _agent = GetComponent<NavigationAgent>();
@@ -38,6 +41,19 @@ public class SeekerEnemy : MonoBehaviour
         // SearchForEnemies(rayDirectionL);
         // SearchForEnemies(rayDirectionR);
         // SearchForEnemies(rayDirectionF);
+        if (!canDamage)
+        {
+            if (_timeRemaining > 0)
+            {
+                _timeRemaining -= Time.deltaTime;
+                canDamage = false;
+            }
+            else
+            {
+                canDamage = true;
+                _timeRemaining = countdownSeconds;
+            }
+        }
         SearchForPlayerSphere();
     }
 
@@ -50,7 +66,6 @@ public class SeekerEnemy : MonoBehaviour
             {
                 _agent.SetDestination(hitInfo.transform.position);
             }
-            Debug.Log(hitInfo.transform.name);
         }
         else
         {
@@ -72,6 +87,11 @@ public class SeekerEnemy : MonoBehaviour
                 {
                     if (hitInfo.transform.CompareTag("Player"))
                     {
+                        if (canDamage)
+                        {
+                            canDamage = false;
+                            hitInfo.transform.GetComponent<PlayerHealth>().Hit(damage);
+                        }
                         _agent.IsChasingPlayer = true;
                         _agent.SetDestination(hitInfo.transform.position);
                     }

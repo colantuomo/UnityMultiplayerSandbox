@@ -113,12 +113,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220132b76eed80649b242d5d52aecffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 1
   searchArea: 4
   rayDistance: 4
   wallLayer:
     serializedVersion: 2
     m_Bits: 64
-  timeRemaining: 0.1
+  countdownSeconds: 2
 --- !u!195 &936441419295645774
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -153,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54c65c3ca849b4942a286325fa726389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownTimer: 2
+  countdownTimer: 5
   IsChasingPlayer: 0
   baseSpeed: 5
   chasingSpeed: 6.5

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 using Photon.Pun;
 using Photon.Realtime;
+
+using Utils.UI;
 public class OnlineGameManager : MonoBehaviourPunCallbacks
 {
     public Transform spawn;
@@ -15,7 +17,7 @@ public class OnlineGameManager : MonoBehaviourPunCallbacks
         SetupInitialConfigs();
         _photonView = GetComponent<PhotonView>();
         _photonView.RPC("RPC_UpdateRoomPlayers", RpcTarget.All);
-
+        // EventsUI.current.UpdateScoreboardTrigger();
     }
 
     private void SetupInitialConfigs()
@@ -35,9 +37,6 @@ public class OnlineGameManager : MonoBehaviourPunCallbacks
     private void RPC_UpdateRoomPlayers()
     {
         TEXT_playersList.text = "";
-        foreach (var item in PhotonNetwork.CurrentRoom.Players)
-        {
-            TEXT_playersList.text += item.Value.NickName + "\n";
-        }
+        TEXT_playersList.text += Scoreboard.AllPlayersScore(PhotonNetwork.CurrentRoom.Players);
     }
 }
